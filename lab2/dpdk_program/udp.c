@@ -136,9 +136,16 @@ lcore_main(void)
 		struct ipv4_hdr *ip_hdr = rte_pktmbuf_mtod_offset(mbuf, struct ipv4_hdr *, sizeof(struct ether_hdr));
 		struct udp_hdr *udp_hdr = rte_pktmbuf_mtod_offset(mbuf, struct udp_hdr *,
 												 sizeof(struct ether_hdr)+sizeof(struct ipv4_hdr));
-			
-		eth_hdr->d_addr = addr;
-		eth_hdr->s_addr = addr;
+		struct ether_addr dst_addr;		//Physical MAC
+		dst_addr.addr_bytes[0] = 0x00;
+		dst_addr.addr_bytes[1] = 0x50;
+		dst_addr.addr_bytes[2] = 0x56;
+		dst_addr.addr_bytes[3] = 0xc0;
+		dst_addr.addr_bytes[4] = 0x00;
+		dst_addr.addr_bytes[5] = 0x02;
+		
+		eth_hdr->s_addr = addr;	
+		eth_hdr->d_addr = dst_addr;
 		eth_hdr->ether_type = htons(ETHER_TYPE_IPv4);
 
 		ip_hdr->version_ihl = 0x45;
